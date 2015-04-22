@@ -1,0 +1,28 @@
+{
+  "name": "basic-ajax",
+  "version": "0.0.1",
+  "description": "A very basic ajax module to get n post stuff.",
+  "main": "lib\\basic-ajax.js",
+  "scripts": {
+    "test": "make test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nickmeldrum/basic-ajax"
+  },
+  "keywords": [
+    "ajax",
+    "XmlHttpRequest"
+  ],
+  "author": "Nick Meldrum <nick@nickmeldrum.com> (http://nickmeldrum.com/)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/nickmeldrum/basic-ajax/issues"
+  },
+  "homepage": "https://github.com/nickmeldrum/basic-ajax",
+  "devDependencies": {
+    "chai": "^2.2.0",
+    "mocha": "^2.2.4"
+  }
+}
+
