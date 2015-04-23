@@ -1,5 +1,5 @@
 'use strict';
-
+ 
 var should = require('chai').should(),
     sinon = require('sinon'),
     ajax = require('../lib/ajax');
