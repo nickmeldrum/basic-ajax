@@ -6,27 +6,45 @@ var should = require('chai').should(),
 
 describe('#ajax', function() {
     beforeEach(function() {
-        this.xhr = sinon.useFakeXMLHttpRequest();
-
-        this.requests = [];
-        this.xhr.onCreate = function(xhr) {
-            this.requests.push(xhr);
-        }.bind(this);
+        this.server = sinon.fakeServer.create();
     });
 
     afterEach(function() {
-        this.xhr.restore();
+        this.server.restore();
     });
 
-    it('GET to valid end point returns json', function() {
-        var promise = ajax.get('/users');
+    it('200 response executes the "then" promise', function(done) {
+        this.server.respondWith('GET', '/', [200, { 'Content-Type': 'application/json' }, '[]']);
 
-        promise.then(function handleGetUsers(users) {
-            console.log(users);
-            users.should.equal('oh hai');
+        var promise = ajax.get('/');
+
+        promise.then(function handleSuccess(response) {
+            response.status.should.equal(200);
         })
-        .fail(function handleGetUsersFailed(error) {
-            console.log(users);
-        });
+        .fail(function handleFail(response) {
+            assert.fail('in fail', 'in then', 'ajax executed the "fail" instead of the "then" promise');
+        })
+        .catch(function (err) { done(err); })
+        .finally(function () { done(); });
+        
+        this.server.respond();
+    });
+
+    it('500 response executes the "fail" promise', function(done) {
+        this.server.respondWith('GET', '/', [500, { 'Content-Type': 'application/json' }, '[]']);
+
+        var promise = ajax.get('/');
+
+        promise.then(function handleSuccess(response) {
+            assert.fail('in then', 'in fail', 'ajax executed the "then" instead of the "fail" promise');
+        })
+        .fail(function handleFail(response) {
+            response.status.should.equal(500);
+        })
+        .catch(function (err) { done(err); })
+        .finally(function () { done(); });
+        
+        this.server.respond();
     });
 });
+ 
