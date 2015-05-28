@@ -10,15 +10,23 @@ A very small and simplistic module for making GET and POST calls. This ajax modu
 ## Usage
 
     var ajax = require('basic-ajax');
-
+    
     var promise = ajax.get('/users');
 
-    promise.then(function handleGetUsers(users) {
-        console.log(users);
-    })
-    .fail(function handleGetUsersFailed(error) {
-        console.log(users);
-    });
+        promise.then(function handleGetUsers(response) {
+            response.status.should.equal(200);
+            response.json[0].name.should.equal('Nick');
+        })
+        .fail(function handleGetUsersFailed(response) {
+            if (response instanceof Error) throw response; // here to handle exceptions in then() function falling through to fail()
+            response.status.should.equal(200);
+        })
+        .catch(function (err) {
+            done(err); })
+        .finally(function () {
+            done();
+        });
+
 
 ## Tests
 
