@@ -2,7 +2,7 @@
  
 var should = require('chai').should(),
     sinon = require('sinon'),
-    ajax = require('../lib/ajax');
+    ajax = require('../lib/basic-ajax');
 
 describe('#ajax', function() {
     beforeEach(function() {
