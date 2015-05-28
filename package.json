@@ -1,6 +1,6 @@
 {
   "name": "basic-ajax",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "description": "A very basic ajax module to get n post stuff.",
   "main": "lib\\basic-ajax.js",
   "scripts": {
@@ -20,6 +20,9 @@
     "url": "https://github.com/nickmeldrum/basic-ajax/issues"
   },
   "homepage": "https://github.com/nickmeldrum/basic-ajax",
+  "dependencies": {
+    "q": "^1.2.0"
+  },
   "devDependencies": {
     "chai": "^2.2.0",
     "karma": "^0.12.31",
@@ -30,7 +33,6 @@
     "karma-phantomjs-launcher": "^0.1.4",
     "mocha": "^2.2.4",
     "phantomjs": "^1.9.16",
-    "q": "^1.2.0",
     "sinon": "^1.14.1"
   }
 }
