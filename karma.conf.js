@@ -12,7 +12,7 @@ module.exports = function (config) {
             'lib/*.js': [ 'browserify' ],
             'test/*.js': [ 'browserify' ]
             },
-        reporters: ['progress', 'growl'],
+        reporters: ['growl', 'mocha'],
         port: 9876,
         colors: true,
         autoWatch: true,
