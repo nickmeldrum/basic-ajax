@@ -46,5 +46,65 @@ describe('#ajax', function() {
         
         this.server.respond();
     });
+
+    it('sets the content type header correctly', function(done) {
+        this.server.respondWith('POST', '/', [200, { 'Content-Type': 'application/json' }, '[]']);
+
+        var promise = ajax.post('/', { 'Content-Type': 'application/json' }, '{"name": "nick"}');
+        var that = this;
+
+        promise.then(function handleSuccess(response) {
+            var contentType = that.server.requests[0].requestHeaders['Content-Type'];
+
+        })
+        .catch(function (err) {done(err); })
+        .finally(done);
+
+        this.server.respond();
+    });
+
+    it('sets accept header correctly', function(done) {
+        this.server.respondWith('GET', '/', [200, { 'Content-Type': 'application/json' }, '[]']);
+
+        var promise = ajax.get('/', { 'Accept': 'application/json' });
+        var that = this;
+
+        promise.then(function handleSuccess(response) {
+            var accept = that.server.requests[0].requestHeaders['Accept'];
+            accept.should.contain('application/json');
+        })
+        .catch(function (err) {done(err); })
+        .finally(done);
+
+        this.server.respond();
+    });
+
+    it('200 on put resolves the promise', function(done) {
+        this.server.respondWith('PUT', '/', [200, { 'Content-Type': 'application/json' }, '[]']);
+
+        var promise = ajax.put('/', { 'Content-Type': 'application/json' }, '[]');
+
+        promise.then(function handleSuccess(response) {
+            response.status.should.equal(200);
+        })
+        .catch(function (err) {done(err); })
+        .finally(done);
+
+        this.server.respond();
+    });
+
+    it('200 on delete resolves the promise', function(done) {
+        this.server.respondWith('DELETE', '/', [200, { 'Content-Type': 'application/json' }, '[]']);
+
+        var promise = ajax.delete('/', { 'Content-Type': 'application/json' }, '[]');
+
+        promise.then(function handleSuccess(response) {
+            response.status.should.equal(200);
+        })
+        .catch(function (err) {done(err); })
+        .finally(done);
+
+        this.server.respond();
+    });
 });
  

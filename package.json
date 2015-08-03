@@ -1,6 +1,6 @@
 {
   "name": "basic-ajax",
-  "version": "0.0.3",
+  "version": "1.0.3",
   "description": "A very basic ajax module to get n post stuff.",
   "main": "lib/basic-ajax.js",
   "scripts": {
