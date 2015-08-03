@@ -79,6 +79,34 @@ describe('#ajax', function() {
         this.server.respond();
     });
 
+    it('200 on get resolves the promise', function(done) {
+        this.server.respondWith('GET', '/', [200, { 'Content-Type': 'application/json' }, '[]']);
+
+        var promise = ajax.get('/');
+
+        promise.then(function handleSuccess(response) {
+            response.status.should.equal(200);
+        })
+        .catch(function (err) {done(err); })
+        .finally(done);
+
+        this.server.respond();
+    });
+
+    it('200 on post resolves the promise', function(done) {
+        this.server.respondWith('POST', '/', [200, { 'Content-Type': 'application/json' }, '[]']);
+
+        var promise = ajax.post('/', { 'Content-Type': 'application/json' }, '[]');
+
+        promise.then(function handleSuccess(response) {
+            response.status.should.equal(200);
+        })
+        .catch(function (err) {done(err); })
+        .finally(done);
+
+        this.server.respond();
+    });
+
     it('200 on put resolves the promise', function(done) {
         this.server.respondWith('PUT', '/', [200, { 'Content-Type': 'application/json' }, '[]']);
 
@@ -100,6 +128,22 @@ describe('#ajax', function() {
 
         promise.then(function handleSuccess(response) {
             response.status.should.equal(200);
+        })
+        .catch(function (err) {done(err); })
+        .finally(done);
+
+        this.server.respond();
+    });
+
+    it('can post form url encoded', function(done) {
+        this.server.respondWith('POST', '/users/john', [200, { 'Content-Type': 'application/json' }, '[]']);
+
+        var promise = ajax.postFormUrlEncoded('/users/john', {"name": "John Smith", "age": 21});
+        var that = this;
+
+        promise.then(function handleSuccess(response) {
+            that.server.requests[0].url.should.equal('/users/john');
+            that.server.requests[0].requestBody.should.equal('name=John%20Smith&age=21');
         })
         .catch(function (err) {done(err); })
         .finally(done);
