@@ -33,6 +33,17 @@ It also provides a postFormUrlEncoded method so you can pass the POST a vanilla 
         }
     })
 
+    // you can post a body as well like this:
+    // (adding as many headers as you like)
+    var promise = ajax.post('/users/add', {"Accept": "application/json", "Content-Type": "application/json"}, '{"name": "Nick"}');
+
+    // there is also a put and a delete function:
+    var promise = ajax.put('/users/nick', {"Accept": "application/json", "Content-Type": "application/json"}, '{"name": "Nick"}');
+    var promise = ajax.delete('/users/nick');
+
+    // if you need to post your body in the form-url-encoded format, just use the special method:
+    var promise = ajax.postFormUrlEncoded('/users/add', '{"name": "Nick", "age": 12}');
+
 ## Tests
 
     npm test
