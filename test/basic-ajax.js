@@ -1,8 +1,11 @@
 'use strict';
  
-var should = require('chai').should(),
-    sinon = require('sinon'),
-    ajax = require('../lib/basic-ajax');
+var chai = require('chai');
+var should = chai.should();
+var sinon = require('sinon');
+var ajax = require('../lib/basic-ajax');
+
+chai.use(require('chai-string'));
 
 describe('#ajax', function() {
     beforeEach(function() {
@@ -135,7 +138,7 @@ describe('#ajax', function() {
         this.server.respond();
     });
 
-    it('can post form url encoded', function(done) {
+    it('posting form-url-encoded converts a shallow json object of a string and number property to a url-encoded body', function(done) {
         this.server.respondWith('POST', '/users/john', [200, { 'Content-Type': 'application/json' }, '[]']);
 
         var promise = ajax.postFormUrlEncoded('/users/john', {"name": "John Smith", "age": 21});
@@ -144,6 +147,21 @@ describe('#ajax', function() {
         promise.then(function handleSuccess(response) {
             that.server.requests[0].url.should.equal('/users/john');
             that.server.requests[0].requestBody.should.equal('name=John%20Smith&age=21');
+        })
+        .catch(function (err) {done(err); })
+        .finally(done);
+
+        this.server.respond();
+    });
+
+    it('posting form-url-encoded sets the content type header', function(done) {
+        this.server.respondWith('POST', '/users/john', [200, { 'Content-Type': 'application/json' }, '[]']);
+
+        var promise = ajax.postFormUrlEncoded('/users/john', {"name": "John Smith", "age": 21});
+        var that = this;
+
+        promise.then(function handleSuccess(response) {
+            that.server.requests[0].requestHeaders["Content-Type"].should.startWith("application/x-www-form-urlencoded;");
         })
         .catch(function (err) {done(err); })
         .finally(done);
