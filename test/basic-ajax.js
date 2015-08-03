@@ -50,7 +50,7 @@ describe('#ajax', function() {
         this.server.respond();
     });
 
-    it('sets the content type header correctly', function(done) {
+    it('sets the content type header', function(done) {
         this.server.respondWith('POST', '/', [200, { 'Content-Type': 'application/json' }, '[]']);
 
         var promise = ajax.post('/', { 'Content-Type': 'application/json' }, '{"name": "nick"}');
@@ -66,7 +66,7 @@ describe('#ajax', function() {
         this.server.respond();
     });
 
-    it('sets accept header correctly', function(done) {
+    it('sets accept header', function(done) {
         this.server.respondWith('GET', '/', [200, { 'Content-Type': 'application/json' }, '[]']);
 
         var promise = ajax.get('/', { 'Accept': 'application/json' });
@@ -154,6 +154,14 @@ describe('#ajax', function() {
         this.server.respond();
     });
 
+    it('posting form-url-encoded doesn\'t convert a deep property in a json object', function() {
+        var postingDeepJsonFunc = function () {
+            var promise = ajax.postFormUrlEncoded('/users/john', {"name": "John Smith", "details": {"age": 21}});
+        };
+
+        postingDeepJsonFunc.should.throw(Error);
+    });
+
     it('posting form-url-encoded sets the content type header', function(done) {
         this.server.respondWith('POST', '/users/john', [200, { 'Content-Type': 'application/json' }, '[]']);
 
@@ -163,9 +171,59 @@ describe('#ajax', function() {
         promise.then(function handleSuccess(response) {
             that.server.requests[0].requestHeaders["Content-Type"].should.startWith("application/x-www-form-urlencoded;");
         })
-        .catch(function (err) {done(err); })
+        .catch(function (err) { done(err); })
         .finally(done);
 
+        this.server.respond();
+    });
+
+    it('response object contains responseText, status and statusText', function(done) {
+        this.server.respondWith('GET', '/', [200, { 'Content-Type': 'application/json' }, '[]']);
+
+        var promise = ajax.get('/');
+        var that = this;
+
+        promise.then(function handleSuccess(response) {
+            response.status.should.equal(that.server.requests[0].status);
+            response.status.should.equal(200);
+            response.statusText.should.equal(that.server.requests[0].statusText);
+            response.statusText.should.equal('OK');
+            response.responseText.should.equal(that.server.requests[0].responseText);
+            response.responseText.should.equal('[]');
+        })
+        .catch(function (err) { done(err); })
+        .finally(function () { done(); });
+        
+        this.server.respond();
+    });
+
+    it('response object contains json object in response when response content type is json', function(done) {
+        this.server.respondWith('GET', '/', [200, { 'Content-Type': 'application/json' }, '{"name": "Nick"}']);
+
+        var promise = ajax.get('/');
+        var that = this;
+
+        promise.then(function handleSuccess(response) {
+            response.json.should.eql({"name": "Nick"});
+        })
+        .catch(function (err) { done(err); })
+        .finally(function () { done(); });
+        
+        this.server.respond();
+    });
+
+    it('response object does not contain json object in response when response content type is not json', function(done) {
+        this.server.respondWith('GET', '/', [200, { 'Content-Type': 'text/plain' }, '{"name": "Nick"}']);
+
+        var promise = ajax.get('/');
+        var that = this;
+
+        promise.then(function handleSuccess(response) {
+            should.equal(response.json, undefined);
+        })
+        .catch(function (err) { done(err); })
+        .finally(function () { done(); });
+        
         this.server.respond();
     });
 });
