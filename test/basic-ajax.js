@@ -226,5 +226,20 @@ describe('#ajax', function() {
         
         this.server.respond();
     });
+
+    it('response object does not contain json object in response when response content type is empty', function(done) {
+        this.server.respondWith('DELETE', '/', [200, {}, '']);
+
+        var promise = ajax.delete('/');
+        var that = this;
+
+        promise.then(function handleSuccess(response) {
+            should.equal(response.json, undefined);
+        })
+        .catch(function (err) { done(err); })
+        .finally(function () { done(); });
+        
+        this.server.respond();
+    });
 });
  
