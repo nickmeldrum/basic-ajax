@@ -270,5 +270,19 @@ describe('#ajax', function() {
         
         this.server.respond();
    });
+
+   it('header contains the string ": " and the whole header value is still returned', function(done) {
+        this.server.respondWith('GET', '/', [200, {'Header': 'um: um'}, '[]']);
+
+        var promise = ajax.get('/');
+
+        promise.then(function handleSuccess(response) {
+            response.headers.Header.should.equal('um: um');
+        })
+        .catch(function (err) { done(err); })
+        .finally(function () { done(); });
+        
+        this.server.respond();
+   });
 });
  
