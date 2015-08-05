@@ -241,5 +241,20 @@ describe('#ajax', function() {
         
         this.server.respond();
     });
+
+    it('returns all headers', function(done) {
+        this.server.respondWith('GET', '/', [200, { 'Content-Type': 'application/json', 'Location': '/someuri' }, '[]']);
+
+        var promise = ajax.get('/');
+
+        promise.then(function handleSuccess(response) {
+            response.headers['Content-Type'].should.equal('application/json');
+            response.headers['Location'].should.equal('/someuri');
+        })
+        .catch(function (err) { done(err); })
+        .finally(function () { done(); });
+        
+        this.server.respond();
+   });
 });
  
