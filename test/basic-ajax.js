@@ -256,5 +256,19 @@ describe('#ajax', function() {
         
         this.server.respond();
    });
+
+   it('returns no headers if headers is null', function(done) {
+        this.server.respondWith('GET', '/', [200, null, '[]']);
+
+        var promise = ajax.get('/');
+
+        promise.then(function handleSuccess(response) {
+            Object.keys(response.headers).length.should.equal(0);
+        })
+        .catch(function (err) { done(err); })
+        .finally(function () { done(); });
+        
+        this.server.respond();
+   });
 });
  
