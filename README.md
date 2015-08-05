@@ -46,8 +46,8 @@ It also provides a postFormUrlEncoded method so you can pass the POST a vanilla 
 
 ### Response Headers:
 
-  * Do you wanna see wot response headers you got?  Just check da .headers object!
-  * Say you get 2 response headers: "Content-Type" and "Location", just get them like this:
+Do you wanna see wot response headers you got?  Just check da .headers object!
+Say you get 2 response headers: "Content-Type" and "Location", just get them like this:
 
     ajax.get('/').then(function(response) {
         console.log(response.headers.Location);
