@@ -110,6 +110,20 @@ describe('#ajax', function() {
         this.server.respond();
     });
 
+    it('200 on patch resolves the promise', function(done) {
+        this.server.respondWith('PATCH', '/', [200, { 'Content-Type': 'application/json' }, '[]']);
+
+        var promise = ajax.patch('/', { 'Content-Type': 'application/json' }, '[]');
+
+        promise.then(function handleSuccess(response) {
+            response.status.should.equal(200);
+        })
+        .catch(function (err) {done(err); })
+        .finally(done);
+
+        this.server.respond();
+    });
+
     it('200 on put resolves the promise', function(done) {
         this.server.respondWith('PUT', '/', [200, { 'Content-Type': 'application/json' }, '[]']);
 
