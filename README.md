@@ -2,11 +2,13 @@
 
 A small and simple module wrapping the xhr (XMLHttpRequest) object.
 
-This module's functions (get, post, put and delete) returns a promise (https://promisesaplus.com/.)
+This module's functions (GET, POST, PUT, PATCH and DELETE) returns a promise (https://promisesaplus.com/.)
 
-The module will return a json formatted response body as a property of the response object if the response content-type is application/json.
+The module will return a JSON formatted response body as a property of the response object if the response Content-Type is "application/json".
 
-It also provides a postFormUrlEncoded method so you can pass the POST a vanilla JSON object and it will be serialised into a form url encoded body if you need to POST in this format.
+It provides JSON "happy" methods to make it easier to work with getting and sending JSON data. (See Usage below for more details.)
+
+It also provides a `postFormUrlEncoded()` method so you can pass the POST a vanilla JSON object and it will be serialised into a form url encoded body if you need to POST in this format.
 
 ## Installation
   
@@ -14,35 +16,66 @@ It also provides a postFormUrlEncoded method so you can pass the POST a vanilla 
 
 ## Usage
 
-    // require the object
+Require the object:
+
     var ajax = require('basic-ajax');
     
-    // just need to do a get? it's as simple as passing in the url:
+### GET's
+    
+Just need to do a get? it's as simple as passing in the url:
+
     var promise = ajax.get('/users');
+    
+Just need to do a get and expect JSON back? Call getJson and it will set the "Accept" header correctly:
 
-    // want to tell the server you want JSON in the response, add the Accept header:
-    var promise = ajax.get('/users', {"Accept": "application/json"});
+    var promise = ajax.getJson('/users');
 
-    // okay, so you are expecting json back? it's already parsed for you:
-    // (this example is getting an array of users with name as one of the properties)
+Want to tell the server you accept xml or something else not JSON? Just set the "Accept" header manually:
+
+    var promise = ajax.get('/users', {"Accept": "application/xml"});
+
+You can of course set any headers you like:
+
+    var promise = ajax.get('/users', {"Accept": "application/json", "Origin": "http://somedomain.com"});
+    
+Okay, so you are expecting JSON back? it's already parsed for you into a "json" property:
+
     promise.then(function handleGetUsers(response) {
         console.log("list of users:");
 
         for(var index = 0; index < response.json.length; index++) {
-            console.log(response.json[index].name);
+          console.log(response.json[index].name);
         }
     })
 
-    // you can post a body as well like this:
-    // (adding as many headers as you like)
-    var promise = ajax.post('/users/add', {"Accept": "application/json", "Content-Type": "application/json"}, '{"name": "Nick"}');
+### POST's, PUT's and PATCH's
 
-    // there is also a put and a delete function:
-    var promise = ajax.put('/users/nick', {"Accept": "application/json", "Content-Type": "application/json"}, '{"name": "Nick"}');
+Want to POST, PUT or PATCH some JSON? Just call the equivalent "JSON" method and pass in your object:
+We will set the content type header correctly for you and json stringify the object passed in.
+    
+    var promise = ajax.postJson('/users/add', {"name": "Nick", "age": 18});
+    var promise = ajax.putJson('/users/1', {"name": "Nick", "age": 18});
+    var promise = ajax.patchJson('/users/1', {"op": "replace", "path": "/age", "value": 21});
+    
+If you already have your JSON as a string, just pass in a string and we won't attempt to stringify it!
+
+    var promise = ajax.postJson('/users/add', '{"name": "Nick", "age": 18}');
+    
+POSTing, PUTting or PATCHing something that isn't JSON? Want to set your own headers? Just use the base `post()`, `put()` or `patch()` methods and set the headers using a JSON object:
+
+    var promise = ajax.post('/users/add', {"Content-Type": "application/xml"}, "<person><name>Nick</name><age>18</age></person>");
+    
+### POSTing bodies in form-url-encoded format
+
+Just use the `postFormUrlEncoded()` method and pass in a JSON object:
+
+    var promise = ajax.postFormUrlEncoded('/users/add', {"name": "Nick", "age": 12});
+
+### DELETE's
+
+You can make a DELETE call by calling the `delete()` method:
+
     var promise = ajax.delete('/users/nick');
-
-    // if you need to post your body in the form-url-encoded format, just use the special method:
-    var promise = ajax.postFormUrlEncoded('/users/add', '{"name": "Nick", "age": 12}');
 
 ### Response Headers:
 
