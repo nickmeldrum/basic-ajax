@@ -70,6 +70,8 @@ POSTing, PUTting or PATCHing something that isn't JSON? Want to set your own hea
 Just use the `postFormUrlEncoded()` method and pass in a JSON object:
 
     var promise = ajax.postFormUrlEncoded('/users/add', {"name": "Nick", "age": 12});
+    
+Note: This currently only works on a "shallow" object, ie. a JSON object that is just a set of name/ value pairs - no deep object graph or arrays. Pull requests accepted or let me know if you want this expanded on!
 
 ### DELETE's
 
