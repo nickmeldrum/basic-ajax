@@ -191,6 +191,201 @@ describe('#ajax', function() {
         this.server.respond();
     });
 
+    it('getting json sets the accept header', function(done) {
+        this.server.respondWith('GET', '/users/john', [200, { 'Content-Type': 'application/json' }, '[]']);
+
+        var promise = ajax.getJson('/users/john');
+        var that = this;
+
+        promise.then(function handleSuccess(response) {
+            that.server.requests[0].requestHeaders["Accept"].should.startWith("application/json");
+        })
+        .catch(function (err) { done(err); })
+        .finally(done);
+
+        this.server.respond();
+    });
+
+    it('posting as json sets the content type header', function(done) {
+        this.server.respondWith('POST', '/users/john', [200, { 'Content-Type': 'application/json' }, '[]']);
+
+        var promise = ajax.postJson('/users/john', {"name": "John Smith", "age": 21});
+        var that = this;
+
+        promise.then(function handleSuccess(response) {
+            that.server.requests[0].requestHeaders["Content-Type"].should.startWith("application/json");
+        })
+        .catch(function (err) { done(err); })
+        .finally(done);
+
+        this.server.respond();
+    });
+
+    it('posting as json stringifies objects passed in as body', function(done) {
+        this.server.respondWith('POST', '/users/john', [200, { 'Content-Type': 'application/json' }, '[]']);
+
+        var promise = ajax.postJson('/users/john', {"name": "John Smith", "age": 21});
+        var that = this;
+
+        promise.then(function handleSuccess(response) {
+            that.server.requests[0].requestBody.should.equal('{"name":"John Smith","age":21}');
+        })
+        .catch(function (err) { done(err); })
+        .finally(done);
+
+        this.server.respond();
+    });
+
+    it('posting as json does not stringify strings passed in as bodyi', function(done) {
+        this.server.respondWith('POST', '/users/john', [200, { 'Content-Type': 'application/json' }, '[]']);
+
+        var promise = ajax.postJson('/users/john', '{"name": "John Smith", "age": 21}');
+        var that = this;
+
+        promise.then(function handleSuccess(response) {
+            that.server.requests[0].requestBody.should.equal('{"name": "John Smith", "age": 21}');
+        })
+        .catch(function (err) { done(err); })
+        .finally(done);
+
+        this.server.respond();
+    });
+
+    it('patching as json sets the content type header', function(done) {
+        this.server.respondWith('PATCH', '/users/john', [200, { 'Content-Type': 'application/json' }, '[]']);
+
+        var promise = ajax.patchJson('/users/john', {"name": "John Smith", "age": 21});
+        var that = this;
+
+        promise.then(function handleSuccess(response) {
+            that.server.requests[0].requestHeaders["Content-Type"].should.startWith("application/json");
+        })
+        .catch(function (err) { done(err); })
+        .finally(done);
+
+        this.server.respond();
+    });
+
+    it('patching as json stringifies objects passed in as body', function(done) {
+        this.server.respondWith('PATCH', '/users/john', [200, { 'Content-Type': 'application/json' }, '[]']);
+
+        var promise = ajax.patchJson('/users/john', {"name": "John Smith", "age": 21});
+        var that = this;
+
+        promise.then(function handleSuccess(response) {
+            that.server.requests[0].requestBody.should.equal('{"name":"John Smith","age":21}');
+        })
+        .catch(function (err) { done(err); })
+        .finally(done);
+
+        this.server.respond();
+    });
+
+    it('patching as json does not stringify strings passed in as bodyi', function(done) {
+        this.server.respondWith('PATCH', '/users/john', [200, { 'Content-Type': 'application/json' }, '[]']);
+
+        var promise = ajax.patchJson('/users/john', '{"name": "John Smith", "age": 21}');
+        var that = this;
+
+        promise.then(function handleSuccess(response) {
+            that.server.requests[0].requestBody.should.equal('{"name": "John Smith", "age": 21}');
+        })
+        .catch(function (err) { done(err); })
+        .finally(done);
+
+        this.server.respond();
+    });
+
+    it('putting as json sets the content type header', function(done) {
+        this.server.respondWith('PUT', '/users/john', [200, { 'Content-Type': 'application/json' }, '[]']);
+
+        var promise = ajax.putJson('/users/john', {"name": "John Smith", "age": 21});
+        var that = this;
+
+        promise.then(function handleSuccess(response) {
+            that.server.requests[0].requestHeaders["Content-Type"].should.startWith("application/json");
+        })
+        .catch(function (err) { done(err); })
+        .finally(done);
+
+        this.server.respond();
+    });
+
+    it('putting as json stringifies objects passed in as body', function(done) {
+        this.server.respondWith('PUT', '/users/john', [200, { 'Content-Type': 'application/json' }, '[]']);
+
+        var promise = ajax.putJson('/users/john', {"name": "John Smith", "age": 21});
+        var that = this;
+
+        promise.then(function handleSuccess(response) {
+            that.server.requests[0].requestBody.should.equal('{"name":"John Smith","age":21}');
+        })
+        .catch(function (err) { done(err); })
+        .finally(done);
+
+        this.server.respond();
+    });
+
+    it('putting as json does not stringify strings passed in as bodyi', function(done) {
+        this.server.respondWith('PUT', '/users/john', [200, { 'Content-Type': 'application/json' }, '[]']);
+
+        var promise = ajax.putJson('/users/john', '{"name": "John Smith", "age": 21}');
+        var that = this;
+
+        promise.then(function handleSuccess(response) {
+            that.server.requests[0].requestBody.should.equal('{"name": "John Smith", "age": 21}');
+        })
+        .catch(function (err) { done(err); })
+        .finally(done);
+
+        this.server.respond();
+    });
+
+    it('deleting as json sets the content type header', function(done) {
+        this.server.respondWith('DELETE', '/users/john', [200, { 'Content-Type': 'application/json' }, '[]']);
+
+        var promise = ajax.deleteJson('/users/john', {"name": "John Smith", "age": 21});
+        var that = this;
+
+        promise.then(function handleSuccess(response) {
+            that.server.requests[0].requestHeaders["Content-Type"].should.startWith("application/json");
+        })
+        .catch(function (err) { done(err); })
+        .finally(done);
+
+        this.server.respond();
+    });
+
+    it('deleting as json stringifies objects passed in as body', function(done) {
+        this.server.respondWith('DELETE', '/users/john', [200, { 'Content-Type': 'application/json' }, '[]']);
+
+        var promise = ajax.deleteJson('/users/john', {"name": "John Smith", "age": 21});
+        var that = this;
+
+        promise.then(function handleSuccess(response) {
+            that.server.requests[0].requestBody.should.equal('{"name":"John Smith","age":21}');
+        })
+        .catch(function (err) { done(err); })
+        .finally(done);
+
+        this.server.respond();
+    });
+
+    it('deleting as json does not stringify strings passed in as bodyi', function(done) {
+        this.server.respondWith('DELETE', '/users/john', [200, { 'Content-Type': 'application/json' }, '[]']);
+
+        var promise = ajax.deleteJson('/users/john', '{"name": "John Smith", "age": 21}');
+        var that = this;
+
+        promise.then(function handleSuccess(response) {
+            that.server.requests[0].requestBody.should.equal('{"name": "John Smith", "age": 21}');
+        })
+        .catch(function (err) { done(err); })
+        .finally(done);
+
+        this.server.respond();
+    });
+
     it('response object contains responseText, status and statusText', function(done) {
         this.server.respondWith('GET', '/', [200, { 'Content-Type': 'application/json' }, '[]']);
 
