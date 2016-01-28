@@ -569,5 +569,57 @@ describe('#ajax', function() {
         
         this.server.respond();
    });
+
+   it ('sets the headers to stop caching by default', function (done) {
+        this.server.respondWith('GET', '/', function(xhr, id) {
+            xhr.requestHeaders['Cache-Control'].should.equal('no-cache');
+            xhr.requestHeaders['Pragma'].should.equal('no-cache');
+            xhr.requestHeaders['If-Modified-Since'].should.contain('1 Jan 2000');
+            xhr.respond();
+        });
+
+        var promise = ajax.get('/');
+
+        promise
+            .catch(function (err) { done(err); })
+            .finally(function () { done(); });
+        
+        this.server.respond();
+   });
+
+   it ('does not set the cache headers if we turn allow caching on', function (done) {
+        this.server.respondWith('GET', '/', function(xhr, id) {
+            should.equal(xhr.requestHeaders['Cache-Control'], undefined);
+            should.equal(xhr.requestHeaders['Pragma'], undefined);
+            should.equal(xhr.requestHeaders['If-Modified-Since'], undefined);
+            xhr.respond();
+        });
+
+        ajax.allowCaching = true;
+        var promise = ajax.get('/');
+
+        promise
+            .catch(function (err) { done(err); })
+            .finally(function () { done(); });
+        
+        this.server.respond();
+   });
+
+   it ('does not override the cache headers if we have set them manually', function (done) {
+        this.server.respondWith('GET', '/', function(xhr, id) {
+            xhr.requestHeaders['Cache-Control'].should.equal('nick');
+            xhr.requestHeaders['Pragma'].should.equal('nick2');
+            xhr.requestHeaders['If-Modified-Since'].should.contain('nick3');
+            xhr.respond();
+        });
+
+        var promise = ajax.get('/', {'Cache-Control': 'nick', 'Pragma': 'nick2', 'If-Modified-Since': 'nick3'});
+
+        promise
+            .catch(function (err) { done(err); })
+            .finally(function () { done(); });
+        
+        this.server.respond();
+   });
 });
  
