@@ -493,5 +493,81 @@ describe('#ajax', function() {
         
         this.server.respond();
    });
+
+   it ('does not send a body if it is a GET', function (done) {
+        this.server.respondWith('GET', '/', function(xhr, id) {
+            if (!xhr.requestBody)
+                xhr.respond(200);
+            else
+                xhr.respond(500);
+        });
+
+        var promise = ajax.get('/');
+
+        promise.then(function handleSuccess(response) {
+            response.status.should.equal(200);
+        })
+        .catch(function (err) { done(err); })
+        .finally(function () { done(); });
+        
+        this.server.respond();
+   });
+
+   it ('does not send a body if it is a POST but the body is null', function (done) {
+        this.server.respondWith('POST', '/', function(xhr, id) {
+            if (!xhr.requestBody)
+                xhr.respond(200);
+            else
+                xhr.respond(500);
+        });
+
+        var promise = ajax.post('/', [], null);
+
+        promise.then(function handleSuccess(response) {
+            response.status.should.equal(200);
+        })
+        .catch(function (err) { done(err); })
+        .finally(function () { done(); });
+        
+        this.server.respond();
+   });
+
+   it ('does not send a body if it is a POST but the body is undefined', function (done) {
+        this.server.respondWith('POST', '/', function(xhr, id) {
+            if (!xhr.requestBody)
+                xhr.respond(200);
+            else
+                xhr.respond(500);
+        });
+
+        var promise = ajax.post('/', [], undefined);
+
+        promise.then(function handleSuccess(response) {
+            response.status.should.equal(200);
+        })
+        .catch(function (err) { done(err); })
+        .finally(function () { done(); });
+        
+        this.server.respond();
+   });
+
+   it ('does send a body if a body has been defined', function (done) {
+        this.server.respondWith('POST', '/', function(xhr, id) {
+            if (xhr.requestBody)
+                xhr.respond(200);
+            else
+                xhr.respond(500);
+        });
+
+        var promise = ajax.post('/', undefined, 'a body');
+
+        promise.then(function handleSuccess(response) {
+            response.status.should.equal(200);
+        })
+        .catch(function (err) { done(err); })
+        .finally(function () { done(); });
+        
+        this.server.respond();
+   });
 });
  
