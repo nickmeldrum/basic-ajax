@@ -89,6 +89,11 @@ Say you get 2 response headers: "Content-Type" and "Location", just get them lik
         console.log(response.headers['Content-Type']);
     });
 
+### Request Headers:
+
+By default basic-ajax sets the X-Requested-With header to XMLHttpRequest.
+See the reasoning here: http://stackoverflow.com/a/22533680 but basically it allows for the server to prevent CSRF attacks
+
 ## Tests
 
     npm test

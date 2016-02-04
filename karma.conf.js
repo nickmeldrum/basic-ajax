@@ -12,6 +12,7 @@ module.exports = function (config) {
             'lib/*.js': [ 'browserify' ],
             'test/*.js': [ 'browserify' ]
             },
+        plugins: ['karma-phantomjs-launcher', 'karma-browserify', 'karma-chai', 'karma-growl-reporter', 'karma-mocha', 'karma-mocha-reporter'],
         reporters: ['growl', 'mocha'],
         port: 9876,
         colors: true,

@@ -621,5 +621,20 @@ describe('#ajax', function() {
         
         this.server.respond();
    });
+
+   it ('sets the requested-with header to ajax', function (done) {
+        this.server.respondWith('GET', '/', function(xhr, id) {
+            xhr.requestHeaders['X-Requested-With'].should.equal('XMLHttpRequest');
+            xhr.respond();
+        });
+
+        var promise = ajax.get('/');
+
+        promise
+            .catch(function (err) { done(err); })
+            .finally(function () { done(); });
+        
+        this.server.respond();
+   });
 });
  
