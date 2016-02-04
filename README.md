@@ -91,10 +91,10 @@ Say you get 2 response headers: "Content-Type" and "Location", just get them lik
 
 ### Request Headers:
 
-By default basic-ajax sets the X-Requested-With header to XMLHttpRequest.
-See the reasoning here: http://stackoverflow.com/a/22533680 but basically it allows for the server to prevent CSRF attacks
+By default basic-ajax sets the `X-Requested-With` header to `XMLHttpRequest`.
+See the reasoning here: http://stackoverflow.com/a/22533680 but basically it allows for the server to prevent CSRF attacks.
 
-basic-ajax does not allow you to override this setting as that is "A Bad Idea".
+Basic-ajax does not allow you to override this setting as that is "A Bad Idea".
 
 ### Caching:
 
