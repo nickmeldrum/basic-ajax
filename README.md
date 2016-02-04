@@ -94,6 +94,16 @@ Say you get 2 response headers: "Content-Type" and "Location", just get them lik
 By default basic-ajax sets the X-Requested-With header to XMLHttpRequest.
 See the reasoning here: http://stackoverflow.com/a/22533680 but basically it allows for the server to prevent CSRF attacks
 
+basic-ajax does not allow you to override this setting as that is "A Bad Idea".
+
+### Caching:
+
+By default basic-ajax stops all possible browser caching of ajax calls by setting the `Cache-Control` header to `no-cache`, the `Pragma` header to `no-cache` and the `If-Modified-Since` header to `1 Jan 2000`.
+This is to stop Internet Explorer's default behaviour to cache ajax calls. More info here: http://www.dashbay.com/2011/05/internet-explorer-caches-ajax/
+
+If for some reason you want to turn this off you can just execute: `ajax.allowCaching = false`
+If for some reason you want to override any of these individual headers, just set them in the headers object you pass in and basic-ajax will use your values instead of it's own.
+
 ## Tests
 
     npm test
