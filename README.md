@@ -104,6 +104,37 @@ This is to stop Internet Explorer's default behaviour to cache ajax calls. More 
 If for some reason you want to turn this off you can just execute: `ajax.allowCaching = false`
 If for some reason you want to override any of these individual headers, just set them in the headers object you pass in and basic-ajax will use your values instead of it's own.
 
+### Middleware:
+
+You can add pre and post hooks by adding middleware to basic-ajax. Pre hooks fire immediately prior to an `xhr.send()` and post hooks fire in `onreadystatechange()` just before the promise either resolves or rejects.
+
+We provide the function: `ajax.applyMiddlewares([ordered, array, of, middleware])` in order to apply your middleware.
+
+A middleware provider should look like this:
+
+    var middleWare = function () {
+        return function (next) {
+            return {
+                pre: function (xhr) {
+                    console.log(xhr.method);
+                    return next(xhr);
+                },
+                post: function (ro) {
+                    console.log(ro.status);
+                    return next(ro);
+                }
+            };
+        }
+    };
+
+ * You must *always* call `next(arg)` at the end of both the pre and post calls in order for the chain of middlewares to execute.
+ * You must *always* implement both pre and post calls even if they just call `next(arg)`.
+ * We don't currently allow for asynchronous hooks.
+ * We don't have any defensive code against a middleware doing something wrong or strange.
+ * For more information look at the tests which should act as deeper documentation. 
+ 
+We also provider the function `ajax.removeMiddlewares()` which will remove any middlewares applied by the mechanism above.
+
 ## Tests
 
     npm test
