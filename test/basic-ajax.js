@@ -237,7 +237,7 @@ describe('#ajax', function() {
         this.server.respond();
     });
 
-    it('posting as json does not stringify strings passed in as bodyi', function(done) {
+    it('posting as json does not stringify strings passed in as body', function(done) {
         this.server.respondWith('POST', '/users/john', [200, { 'Content-Type': 'application/json' }, '[]']);
 
         var promise = ajax.postJson('/users/john', '{"name": "John Smith", "age": 21}');
@@ -282,7 +282,7 @@ describe('#ajax', function() {
         this.server.respond();
     });
 
-    it('patching as json does not stringify strings passed in as bodyi', function(done) {
+    it('patching as json does not stringify strings passed in as body', function(done) {
         this.server.respondWith('PATCH', '/users/john', [200, { 'Content-Type': 'application/json' }, '[]']);
 
         var promise = ajax.patchJson('/users/john', '{"name": "John Smith", "age": 21}');
@@ -327,7 +327,7 @@ describe('#ajax', function() {
         this.server.respond();
     });
 
-    it('putting as json does not stringify strings passed in as bodyi', function(done) {
+    it('putting as json does not stringify strings passed in as body', function(done) {
         this.server.respondWith('PUT', '/users/john', [200, { 'Content-Type': 'application/json' }, '[]']);
 
         var promise = ajax.putJson('/users/john', '{"name": "John Smith", "age": 21}');
@@ -372,7 +372,7 @@ describe('#ajax', function() {
         this.server.respond();
     });
 
-    it('deleting as json does not stringify strings passed in as bodyi', function(done) {
+    it('deleting as json does not stringify strings passed in as body', function(done) {
         this.server.respondWith('DELETE', '/users/john', [200, { 'Content-Type': 'application/json' }, '[]']);
 
         var promise = ajax.deleteJson('/users/john', '{"name": "John Smith", "age": 21}');
