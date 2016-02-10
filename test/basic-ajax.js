@@ -643,20 +643,18 @@ describe('#ajax', function() {
         var preCalled = false;
         var postCalled = false;
 
-        var middleWare = function () {
-            return function (next) {
+        var middleWare = function (nextHooks) {
                 return {
                     pre: function (xhr) {
                         preCalled = true;
-                        return next(xhr);
+                        return nextHooks.pre(xhr);
                     },
                     post: function (ro) {
                         postCalled = true;
-                        return next(ro);
+                        return nextHooks.post(ro);
                     }
                 };
-            }
-        };
+            };
 
         ajax.applyMiddlewares([middleWare]);
 
@@ -675,20 +673,18 @@ describe('#ajax', function() {
    it ('a middleware applied then its pre gets the xhr and post gets the ro object', function (done) {
         this.server.respondWith('GET', '/', [200, {}, '']);
 
-        var middleWare = function () {
-            return function (next) {
+        var middleWare = function (nextHooks) {
                 return {
                     pre: function (xhr) {
                         xhr.method.should.equal('GET');
-                        return next(xhr);
+                        return nextHooks.pre(xhr);
                     },
                     post: function (ro) {
                         ro.status.should.equal(200);
-                        return next(ro);
+                        return nextHooks.post(ro);
                     }
                 };
-            }
-        };
+            };
 
         ajax.applyMiddlewares([middleWare]);
 
@@ -704,15 +700,15 @@ describe('#ajax', function() {
         this.server.respondWith('GET', '/', [200, {}, '']);
 
         var middleWare = function () {
-            return function (next) {
+            return function (nextHooks) {
                 return {
                     pre: function (xhr) {
                         should.fail();
-                        return next(xhr);
+                        return nextHooks.pre(xhr);
                     },
                     post: function (ro) {
                         should.fail();
-                        return next(ro);
+                        return nextHooks.post(ro);
                     }
                 };
             }
@@ -734,35 +730,31 @@ describe('#ajax', function() {
 
         var calls = [];
 
-        var middleWare1 = function () {
-            return function (next) {
+        var middleWare1 = function (nextHooks) {
                 return {
                     pre: function (xhr) {
                         calls.push(1);
-                        return next(xhr);
+                        return nextHooks.pre(xhr);
                     },
                     post: function (ro) {
                         calls.push(3);
-                        return next(ro);
+                        return nextHooks.post(ro);
                     }
                 };
-            }
-        };
+            };
 
-        var middleWare2 = function () {
-            return function (next) {
+        var middleWare2 = function (nextHooks) {
                 return {
                     pre: function (xhr) {
                         calls.push(2);
-                        return next(xhr);
+                        return nextHooks.pre(xhr);
                     },
                     post: function (ro) {
                         calls.push(4);
-                        return next(ro);
+                        return nextHooks.post(ro);
                     }
                 };
-            }
-        };
+            };
 
         ajax.applyMiddlewares([middleWare1, middleWare2]);
 
@@ -770,6 +762,40 @@ describe('#ajax', function() {
         promise
             .then(function () {
                 calls.should.eql([1,2,3,4]);
+            })
+            .catch(function (err) { done(err); })
+            .finally(function () { done(); });
+
+        this.server.respond();
+   });
+
+
+   it ('middleware accepts arguments from calling code', function (done) {
+        this.server.respondWith('GET', '/', [200, {}, '']);
+
+        var outsideDependency = {info: 'some initial string'};
+
+        var middleWare = function(dependency) {
+            return function (nextHooks) {
+                return {
+                    pre: function (xhr) {
+                        dependency.info.should.equal('changed string');
+                        return nextHooks.pre(xhr);
+                    },
+                    post: function (ro) {
+                        return nextHooks.post(ro);
+                    }
+                };
+            }
+        }(outsideDependency);
+
+        ajax.applyMiddlewares([middleWare]);
+
+        outsideDependency.info = 'changed string';
+
+        var promise = ajax.get('/');
+        promise
+            .then(function () {
             })
             .catch(function (err) { done(err); })
             .finally(function () { done(); });
