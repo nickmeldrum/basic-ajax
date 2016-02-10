@@ -769,7 +769,6 @@ describe('#ajax', function() {
         this.server.respond();
    });
 
-
    it ('middleware accepts arguments from calling code', function (done) {
         this.server.respondWith('GET', '/', [200, {}, '']);
 
@@ -802,5 +801,71 @@ describe('#ajax', function() {
 
         this.server.respond();
    });
-});
+
+   it ('middleware allows state passed from pres to posts', function (done) {
+        this.server.respondWith('GET', '/', [200, {}, '']);
+
+        var middleWare = function (nextHooks) {
+            return {
+                pre: function (xhr, state) {
+                    state.someInfo = 'oh wow';
+                    return nextHooks.pre(xhr);
+                },
+                post: function (ro, state) {
+                    state.someInfo.should.equal('oh wow');
+                    return nextHooks.post(ro);
+                }
+            };
+        };
+
+        ajax.applyMiddlewares([middleWare]);
+
+        var promise = ajax.get('/');
+        promise
+            .then(function () {
+            })
+            .catch(function (err) { done(err); })
+            .finally(function () { done(); });
+
+        this.server.respond();
+   });
+   
+   it ('middleware state is private to each request', function (done) {
+        this.server.respondWith('GET', '/first', [200, {}, '']);
+
+        var testString = '';
+
+        var middleWare1 = function (nextHooks) {
+            return {
+                pre: function (xhr, state) {
+                    should.not.exist(state.someInfo);
+                    state.someInfo = 'oh wow' + xhr.url;
+                    return nextHooks.pre(xhr, state);
+                },
+                post: function (ro, state) {
+                    state.someInfo.should.equal('oh wow' + testString);
+                    return nextHooks.post(ro, state);
+                }
+            };
+        };
+
+        ajax.applyMiddlewares([middleWare1]);
+
+        var that = this;
+        testString = '/first';
+        ajax.get('/first').then(function () {
+            that.server.respondWith('GET', '/second', [200, {}, '']);
+
+            testString = '/second';
+            ajax.get('/second').then(function() {
+            })
+            .catch(function (err) { done(err); })
+            .finally(function () { done(); });
+
+            that.server.respond();
+        })
+        .catch(function (err) { done(err); });
  
+        this.server.respond();
+   });
+});
