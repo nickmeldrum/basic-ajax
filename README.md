@@ -116,11 +116,11 @@ A middleware provider should look like this:
         return function (next) {
             return {
                 pre: function (xhr) {
-                    calls.push(1);
+                    console.log(xhr.method);
                     return next(xhr);
                 },
                 post: function (ro) {
-                    calls.push(3);
+                    console.log(ro.status);
                     return next(ro);
                 }
             };
