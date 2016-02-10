@@ -112,26 +112,25 @@ We provide the function: `ajax.applyMiddlewares([ordered, array, of, middleware]
 
 A middleware provider should look like this:
 
-    var middleWare = function () {
-        return function (next) {
-            return {
-                pre: function (xhr) {
-                    console.log(xhr.method);
-                    return next(xhr);
-                },
-                post: function (ro) {
-                    console.log(ro.status);
-                    return next(ro);
-                }
-            };
-        }
+    var middleWare = function (nextHooks) {
+      return {
+          pre: function (xhr) {
+              console.log(xhr.method);
+              return nextHooks.pre(xhr);
+          },
+          post: function (ro) {
+              console.log(ro.status);
+              return nextHooks.post(ro);
+          }
+      };
     };
 
- * You must *always* call `next(arg)` at the end of both the pre and post calls in order for the chain of middlewares to execute.
- * You must *always* implement both pre and post calls even if they just call `next(arg)`.
+ * You must *always* call `nextHooks.pre(xhr)` and `nextHooks.post(ro)` at the end of both the pre and post calls in order for the chain of middlewares to execute.
+ * You must *always* implement both pre and post calls even if they just call the next functions.
  * We don't currently allow for asynchronous hooks.
  * We don't have any defensive code against a middleware doing something wrong or strange.
  * For more information look at the tests which should act as deeper documentation. 
+ * If you want your middleware to utilise information from the calling code just wrap it in a self executing function creating a closure on your outside dependency. (See the test `'middleware accepts arguments from calling code'` for an example of this.)
  
 We also provider the function `ajax.removeMiddlewares()` which will remove any middlewares applied by the mechanism above.
 
