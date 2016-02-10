@@ -10,6 +10,7 @@ chai.use(require('chai-string'));
 describe('#ajax', function() {
     beforeEach(function() {
         this.server = sinon.fakeServer.create();
+        ajax.removeMiddlewares();
     });
 
     afterEach(function() {
@@ -634,6 +635,145 @@ describe('#ajax', function() {
             .catch(function (err) { done(err); })
             .finally(function () { done(); });
         
+        this.server.respond();
+   });
+
+   it ('a middleware applied then its pre and post gets called', function (done) {
+        this.server.respondWith('GET', '/', [200, {}, '']);
+        var preCalled = false;
+        var postCalled = false;
+
+        var middleWare = function () {
+            return function (next) {
+                return {
+                    pre: function (xhr) {
+                        preCalled = true;
+                        return next(xhr);
+                    },
+                    post: function (ro) {
+                        postCalled = true;
+                        return next(ro);
+                    }
+                };
+            }
+        };
+
+        ajax.applyMiddlewares([middleWare]);
+
+        var promise = ajax.get('/');
+        promise
+            .then(function () {
+                should.equal(preCalled, true);
+                should.equal(postCalled, true);
+            })
+            .catch(function (err) { done(err); })
+            .finally(function () { done(); });
+
+        this.server.respond();
+   });
+
+   it ('a middleware applied then its pre gets the xhr and post gets the ro object', function (done) {
+        this.server.respondWith('GET', '/', [200, {}, '']);
+
+        var middleWare = function () {
+            return function (next) {
+                return {
+                    pre: function (xhr) {
+                        xhr.method.should.equal('GET');
+                        return next(xhr);
+                    },
+                    post: function (ro) {
+                        ro.status.should.equal(200);
+                        return next(ro);
+                    }
+                };
+            }
+        };
+
+        ajax.applyMiddlewares([middleWare]);
+
+        var promise = ajax.get('/');
+        promise
+            .catch(function (err) { done(err); })
+            .finally(function () { done(); });
+
+        this.server.respond();
+   });
+
+   it ('a middleware applied then middlewares removed will not get run', function (done) {
+        this.server.respondWith('GET', '/', [200, {}, '']);
+
+        var middleWare = function () {
+            return function (next) {
+                return {
+                    pre: function (xhr) {
+                        should.fail();
+                        return next(xhr);
+                    },
+                    post: function (ro) {
+                        should.fail();
+                        return next(ro);
+                    }
+                };
+            }
+        };
+
+        ajax.applyMiddlewares([middleWare]);
+        ajax.removeMiddlewares();
+
+        var promise = ajax.get('/');
+        promise
+            .catch(function (err) { done(err); })
+            .finally(function () { done(); });
+
+        this.server.respond();
+   });
+
+   it ('2 middlewares applied then their pre and posts are called in the right order', function (done) {
+        this.server.respondWith('GET', '/', [200, {}, '']);
+
+        var calls = [];
+
+        var middleWare1 = function () {
+            return function (next) {
+                return {
+                    pre: function (xhr) {
+                        calls.push(1);
+                        return next(xhr);
+                    },
+                    post: function (ro) {
+                        calls.push(3);
+                        return next(ro);
+                    }
+                };
+            }
+        };
+
+        var middleWare2 = function () {
+            return function (next) {
+                return {
+                    pre: function (xhr) {
+                        calls.push(2);
+                        return next(xhr);
+                    },
+                    post: function (ro) {
+                        calls.push(4);
+                        return next(ro);
+                    }
+                };
+            }
+        };
+
+        ajax.applyMiddlewares([middleWare1, middleWare2]);
+
+        var promise = ajax.get('/');
+        promise
+            .then(function () {
+                calls.should.eql([1,2,3,4]);
+            })
+            .catch(function (err) { done(err); })
+            .finally(function () { done(); });
+
         this.server.respond();
    });
 });
