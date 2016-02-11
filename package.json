@@ -1,7 +1,7 @@
 {
   "name": "basic-ajax",
-  "version": "1.4.3",
-  "description": "A very basic ajax module to get n post stuff.",
+  "version": "2.0.0",
+  "description": "An ajax wrapper with good json support, extensibility hooks and fixes to most common issues built in.",
   "main": "lib/basic-ajax.js",
   "scripts": {
     "test": "karma start"
@@ -13,7 +13,7 @@
   "keywords": [
     "ajax",
     "XmlHttpRequest",
-    "middleware"
+    "extensibility"
   ],
   "author": "Nick Meldrum <nick@nickmeldrum.com> (http://nickmeldrum.com/)",
   "license": "MIT",
@@ -22,20 +22,22 @@
   },
   "homepage": "https://github.com/nickmeldrum/basic-ajax",
   "dependencies": {
-    "q": "^1.2.0"
+    "bluebird": "^3.2.2"
   },
   "devDependencies": {
-    "chai": "^2.2.0",
-    "chai-string": "^1.1.2",
-    "karma": "^0.12.31",
-    "karma-browserify": "^4.1.2",
+    "browserify": "^13.0.0",
+    "chai": "^3.5.0",
+    "chai-string": "^1.1.6",
+    "karma": "^0.13.19",
+    "karma-browserify": "^5.0.1",
     "karma-chai": "^0.1.0",
     "karma-growl-reporter": "^0.1.1",
-    "karma-mocha": "^0.1.10",
-    "karma-mocha-reporter": "^1.0.4",
-    "karma-phantomjs-launcher": "^0.1.4",
-    "mocha": "^2.2.4",
-    "phantomjs": "^1.9.16",
-    "sinon": "^1.14.1"
+    "karma-mocha": "^0.2.1",
+    "karma-mocha-reporter": "^1.1.5",
+    "karma-phantomjs-launcher": "^1.0.0",
+    "mocha": "^2.4.5",
+    "phantomjs-prebuilt": "^2.1.4",
+    "sinon": "^1.17.3",
+    "watchify": "^3.7.0"
   }
 }
