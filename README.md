@@ -1,6 +1,6 @@
 # Basic-Ajax
 
-A small and simple module wrapping the xhr (XMLHttpRequest) object.
+A promisified XMLHttpRequest wrapper with json support, extensibility hooks and fixes to most common xhr issues built in.
 
 This module's functions (GET, POST, PUT, PATCH and DELETE) returns a promise (https://promisesaplus.com/.)
 
@@ -24,23 +24,23 @@ Require the object:
     
 Just need to do a get? it's as simple as passing in the url:
 
-    var promise = ajax.get('/users');
+    ajax.get('/users');
     
 Just need to do a get and expect JSON back? Call getJson and it will set the "Accept" header correctly:
 
-    var promise = ajax.getJson('/users');
+    ajax.getJson('/users');
 
 Want to tell the server you accept xml or something else not JSON? Just set the "Accept" header manually:
 
-    var promise = ajax.get('/users', {"Accept": "application/xml"});
+    ajax.get('/users', {"Accept": "application/xml"});
 
 You can of course set any headers you like:
 
-    var promise = ajax.get('/users', {"Accept": "application/json", "Origin": "http://somedomain.com"});
+    ajax.get('/users', {"Accept": "application/json", "Origin": "http://somedomain.com"});
     
 Okay, so you are expecting JSON back? it's already parsed for you into a "json" property:
 
-    promise.then(function handleGetUsers(response) {
+    ajax.getJson('/').then(function(response) {
         console.log("list of users:");
 
         for(var index = 0; index < response.json.length; index++) {
@@ -53,23 +53,23 @@ Okay, so you are expecting JSON back? it's already parsed for you into a "json" 
 Want to POST, PUT or PATCH some JSON? Just call the equivalent "JSON" method and pass in your object:
 We will set the content type header correctly for you and json stringify the object passed in.
     
-    var promise = ajax.postJson('/users/add', {"name": "Nick", "age": 18});
-    var promise = ajax.putJson('/users/1', {"name": "Nick", "age": 18});
-    var promise = ajax.patchJson('/users/1', {"op": "replace", "path": "/age", "value": 21});
+    ajax.postJson('/users/add', {"name": "Nick", "age": 18});
+    ajax.putJson('/users/1', {"name": "Nick", "age": 18});
+    ajax.patchJson('/users/1', {"op": "replace", "path": "/age", "value": 21});
     
 If you already have your JSON as a string, just pass in a string and we won't attempt to stringify it!
 
-    var promise = ajax.postJson('/users/add', '{"name": "Nick", "age": 18}');
+    ajax.postJson('/users/add', '{"name": "Nick", "age": 18}');
     
 POSTing, PUTting or PATCHing something that isn't JSON? Want to set your own headers? Just use the base `post()`, `put()` or `patch()` methods and set the headers using a JSON object:
 
-    var promise = ajax.post('/users/add', {"Content-Type": "application/xml"}, "<person><name>Nick</name><age>18</age></person>");
+    ajax.post('/users/add', {"Content-Type": "application/xml"}, "<person><name>Nick</name><age>18</age></person>");
     
 ### POSTing bodies in form-url-encoded format
 
 Just use the `postFormUrlEncoded()` method and pass in a JSON object:
 
-    var promise = ajax.postFormUrlEncoded('/users/add', {"name": "Nick", "age": 12});
+    ajax.postFormUrlEncoded('/users/add', {"name": "Nick", "age": 12});
     
 Note: This currently only works on a "shallow" object, ie. a JSON object that is just a set of name/ value pairs - no deep object graph or arrays. Pull requests accepted or let me know if you want this expanded on!
 
@@ -77,7 +77,7 @@ Note: This currently only works on a "shallow" object, ie. a JSON object that is
 
 You can make a DELETE call by calling the `delete()` method:
 
-    var promise = ajax.delete('/users/nick');
+    ajax.delete('/users/nick');
 
 ### Response Headers:
 
@@ -104,35 +104,33 @@ This is to stop Internet Explorer's default behaviour to cache ajax calls. More 
 If for some reason you want to turn this off you can just execute: `ajax.allowCaching = false`
 If for some reason you want to override any of these individual headers, just set them in the headers object you pass in and basic-ajax will use your values instead of it's own.
 
-### Middleware:
+### Hooks:
 
-You can add pre and post hooks by adding middleware to basic-ajax. Pre hooks fire immediately prior to an `xhr.send()` and post hooks fire in `onreadystatechange()` just before the promise either resolves or rejects.
+You can add pre and post hooks to basic-ajax. Pre hooks fire immediately prior to an `xhr.send()` and post hooks fire after a `load()`, `error()` or `abort()` event has been called.
 
-We provide the function: `ajax.applyMiddlewares([ordered, array, of, middleware])` in order to apply your middleware.
+We provide the function: `ajax.setHooks([ordered, array, of, hooks])` in order to setup your hooks.
 
-A middleware provider should look like this:
+A hooks provider should look like this:
 
-    var middleWare = function (nextHooks) {
-      return {
-          pre: function (xhr) {
-              console.log(xhr.method);
-              return nextHooks.pre(xhr);
-          },
-          post: function (ro) {
-              console.log(ro.status);
-              return nextHooks.post(ro);
-          }
-      };
+    var hook = {
+        pre: function (xhr, state) {
+          console.log(xhr.method);
+        },
+        post: function (ro, state) {
+          console.log(ro.status);
+        }
     };
 
- * You must *always* call `nextHooks.pre(xhr)` and `nextHooks.post(ro)` at the end of both the pre and post calls in order for the chain of middlewares to execute.
- * You must *always* implement both pre and post calls even if they just call the next functions.
+ * if a pre function returns an object with a `cancel=true` property on it then the `xhr.send()` will not fire and the promise will be immediately resolved returning an object with the `reason` string set to a `reason` string you return from the `pre()` function as well as the xhr object.
+ * if a pre function cancels, no other hooks will get run.
+ * you can setup either a pre or a post function or both in your hook
+ * the state object is for passing state between the pre and post functions.
+ * this state is private to each request and private to each hook that is run.
  * We don't currently allow for asynchronous hooks.
- * We don't have any defensive code against a middleware doing something wrong or strange.
  * For more information look at the tests which should act as deeper documentation. 
- * If you want your middleware to utilise information from the calling code just wrap it in a self executing function creating a closure on your outside dependency. (See the test `'middleware accepts arguments from calling code'` for an example of this.)
  
-We also provider the function `ajax.removeMiddlewares()` which will remove any middlewares applied by the mechanism above.
+We provide `ajax.addHooks()` to add hooks to the existing chain of hooks set up (whereas `ajax.setHooks` will replace the existing chain.)
+We also provide the function `ajax.removeHooks()` which will remove all hooks applied by the mechanisms above.
 
 ## Tests
 

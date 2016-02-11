@@ -4,7 +4,7 @@ var Promise = require('bluebird');
 var chai = require('chai');
 var should = chai.should();
 var sinon = require('sinon');
-var ajax = require('../lib/basic-ajax');
+var ajax = require('../lib');
 
 chai.use(require('chai-string'));
 

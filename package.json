@@ -1,8 +1,8 @@
 {
   "name": "basic-ajax",
   "version": "2.0.0",
-  "description": "An ajax wrapper with good json support, extensibility hooks and fixes to most common issues built in.",
-  "main": "lib/basic-ajax.js",
+  "description": "A promisified ajax wrapper with json support, extensibility hooks and fixes to most common xhr issues built in.",
+  "main": "lib/index.js",
   "scripts": {
     "test": "karma start"
   },
