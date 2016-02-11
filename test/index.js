@@ -14,6 +14,7 @@ describe('#ajax', function() {
     });
 
     afterEach(function() {
+        ajax.removeHooks();
         this.server.restore();
     });
 
@@ -33,6 +34,28 @@ describe('#ajax', function() {
         ajax.get('/')
             .then(function(response) { response.status.should.equal(500); })
             .catch(done).finally(done);
+
+        this.server.respond();
+    });
+
+    it('aborting request cancels the send', function(done) {
+        this.server.respondWith('GET', '/', [200, { 'Content-Type': 'application/json' }, '[]']);
+
+        var hook = {
+            pre: function(xhr) { xhr.abort(); }
+        };
+
+        ajax.setHooks([hook]);
+
+        ajax.get('/')
+            .then(function(obj) {
+                obj.cancelled.should.equal(true);
+            })
+            .catch(done)
+            .finally(function () {
+                ajax.removeHooks();
+                done();
+            });
 
         this.server.respond();
     });
