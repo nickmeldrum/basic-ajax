@@ -38,8 +38,10 @@ describe('#ajax', function() {
         this.server.respond();
     });
 
-    it('aborting request cancels the send', function(done) {
-        this.server.respondWith('GET', '/', [200, { 'Content-Type': 'application/json' }, '[]']);
+    it('aborting request cancels the send and rejects the promise', function(done) {
+        this.server.respondWith(function () {
+            assert.fail();
+        });
 
         var hook = {
             pre: function(xhr) { xhr.abort(); }
@@ -48,10 +50,12 @@ describe('#ajax', function() {
         ajax.setHooks([hook]);
 
         ajax.get('/')
-            .then(function(obj) {
-                obj.cancelled.should.equal(true);
+            .then(function() {
+                assert.fail();
             })
-            .catch(done)
+            .catch(function (err) {
+                err.cancelled.should.equal(true);
+            })
             .finally(function () {
                 ajax.removeHooks();
                 done();
@@ -906,6 +910,37 @@ describe('#ajax', function() {
                 obj.xhr.url.should.equal('/');
             })
            .catch(done).finally(done);
+
+        this.server.respond();
+    });
+
+    it('when post hook cancels, the next hooks are not run', function (done) {
+        this.server.respondWith('GET', '/', [200, {}, '']);
+
+        var hook = {
+            post: function(xhr) { return {cancel: true, reason: 'just because'}; }
+        };
+        var hook2 = {
+            post: function(xhr) { assert.fail(); }
+        };
+
+        ajax.setHooks([hook, hook2]);
+
+        ajax.get('/').then(function () { assert.fail(); }).finally(done);
+
+        this.server.respond();
+    });
+
+    it('when post hook cancels, the promise is rejected', function (done) {
+        this.server.respondWith('GET', '/', [200, {}, '']);
+
+        var hook = {
+            post: function(xhr) { return {cancel: true, reason: 'just because'}; }
+        };
+
+        ajax.setHooks([hook]);
+
+        ajax.get('/').then(function() { assert.fail(); }).finally(done);
 
         this.server.respond();
     });
