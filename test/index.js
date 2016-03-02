@@ -22,8 +22,8 @@ describe('#ajax', function() {
         this.server.respondWith('GET', '/', [200, { 'Content-Type': 'application/json' }, '[]']);
 
         ajax.get('/')
-            .then(function (response) { response.status.should.equal(200); })
-            .catch(done).finally(done);
+        .then(function (response) { response.status.should.equal(200); })
+        .catch(done).finally(done);
 
         this.server.respond();
     });
@@ -32,8 +32,8 @@ describe('#ajax', function() {
         this.server.respondWith('GET', '/', [500, { 'Content-Type': 'application/json' }, '[]']);
 
         ajax.get('/')
-            .then(function(response) { response.status.should.equal(500); })
-            .catch(done).finally(done);
+        .then(function(response) { response.status.should.equal(500); })
+        .catch(done).finally(done);
 
         this.server.respond();
     });
@@ -50,16 +50,16 @@ describe('#ajax', function() {
         ajax.setHooks([hook]);
 
         ajax.get('/')
-            .then(function() {
-                assert.fail();
-            })
-            .catch(function (err) {
-                err.cancelled.should.equal(true);
-            })
-            .finally(function () {
-                ajax.removeHooks();
-                done();
-            });
+        .then(function() {
+            assert.fail();
+        })
+        .catch(function (err) {
+            err.cancelled.should.equal(true);
+        })
+        .finally(function () {
+            ajax.removeHooks();
+            done();
+        });
 
         this.server.respond();
     });
@@ -69,11 +69,11 @@ describe('#ajax', function() {
         this.server.respondWith('POST', '/', [200, { 'Content-Type': 'application/json' }, '[]']);
 
         ajax.post('/', { 'Content-Type': 'application/json' }, '{"name": "nick"}')
-            .then(function(response) {
-                var contentType = that.server.requests[0].requestHeaders['Content-Type'];
-                contentType.should.startWith('application/json');
-            })
-            .catch(done).finally(done);
+        .then(function(response) {
+            var contentType = that.server.requests[0].requestHeaders['Content-Type'];
+            contentType.should.startWith('application/json');
+        })
+        .catch(done).finally(done);
 
         this.server.respond();
     });
@@ -83,11 +83,11 @@ describe('#ajax', function() {
         this.server.respondWith('GET', '/', [200, { 'Content-Type': 'application/json' }, '[]']);
 
         ajax.get('/', { 'Accept': 'application/json' })
-            .then(function(response) {
-                var accept = that.server.requests[0].requestHeaders['Accept'];
-                accept.should.contain('application/json');
-            })
-            .catch(done).finally(done);
+        .then(function(response) {
+            var accept = that.server.requests[0].requestHeaders['Accept'];
+            accept.should.contain('application/json');
+        })
+        .catch(done).finally(done);
 
         this.server.respond();
     });
@@ -96,8 +96,8 @@ describe('#ajax', function() {
         this.server.respondWith('GET', '/', [200, { 'Content-Type': 'application/json' }, '[]']);
 
         ajax.get('/')
-            .then(function(response) { response.status.should.equal(200); })
-            .catch(done).finally(done);
+        .then(function(response) { response.status.should.equal(200); })
+        .catch(done).finally(done);
 
         this.server.respond();
     });
@@ -106,8 +106,8 @@ describe('#ajax', function() {
         this.server.respondWith('POST', '/', [200, { 'Content-Type': 'application/json' }, '[]']);
 
         ajax.post('/', { 'Content-Type': 'application/json' }, '[]')
-            .then(function(response) { response.status.should.equal(200); })
-            .catch(done).finally(done);
+        .then(function(response) { response.status.should.equal(200); })
+        .catch(done).finally(done);
 
         this.server.respond();
     });
@@ -116,9 +116,9 @@ describe('#ajax', function() {
         this.server.respondWith('PATCH', '/', [200, { 'Content-Type': 'application/json' }, '[]']);
 
         ajax.patch('/', { 'Content-Type': 'application/json' }, '[]')
-            .then(function(response) { response.status.should.equal(200); })
-            .catch(function (err) {done(err); })
-            .finally(done);
+        .then(function(response) { response.status.should.equal(200); })
+        .catch(function (err) {done(err); })
+        .finally(done);
 
         this.server.respond();
     });
@@ -127,9 +127,9 @@ describe('#ajax', function() {
         this.server.respondWith('PUT', '/', [200, { 'Content-Type': 'application/json' }, '[]']);
 
         ajax.put('/', { 'Content-Type': 'application/json' }, '[]')
-            .then(function(response) { response.status.should.equal(200); })
-            .catch(function (err) {done(err); })
-            .finally(done);
+        .then(function(response) { response.status.should.equal(200); })
+        .catch(function (err) {done(err); })
+        .finally(done);
 
         this.server.respond();
     });
@@ -138,9 +138,9 @@ describe('#ajax', function() {
         this.server.respondWith('DELETE', '/', [200, { 'Content-Type': 'application/json' }, '[]']);
 
         ajax.delete('/', { 'Content-Type': 'application/json' }, '[]')
-            .then(function(response) { response.status.should.equal(200); })
-            .catch(function (err) {done(err); })
-            .finally(done);
+        .then(function(response) { response.status.should.equal(200); })
+        .catch(function (err) {done(err); })
+        .finally(done);
 
         this.server.respond();
     });
@@ -150,12 +150,12 @@ describe('#ajax', function() {
         this.server.respondWith('POST', '/users/john', [200, { 'Content-Type': 'application/json' }, '[]']);
 
         ajax.postFormUrlEncoded('/users/john', {"name": "John Smith", "age": 21})
-            .then(function(response) {
-                that.server.requests[0].url.should.equal('/users/john');
-                that.server.requests[0].requestBody.should.equal('name=John%20Smith&age=21');
-            })
-            .catch(function (err) {done(err); })
-            .finally(done);
+        .then(function(response) {
+            that.server.requests[0].url.should.equal('/users/john');
+            that.server.requests[0].requestBody.should.equal('name=John%20Smith&age=21');
+        })
+        .catch(function (err) {done(err); })
+        .finally(done);
 
         this.server.respond();
     });
@@ -173,10 +173,10 @@ describe('#ajax', function() {
         this.server.respondWith('POST', '/users/john', [200, { 'Content-Type': 'application/json' }, '[]']);
 
         ajax.postFormUrlEncoded('/users/john', {"name": "John Smith", "age": 21})
-            .then(function(response) {
-                that.server.requests[0].requestHeaders["Content-Type"].should.startWith("application/x-www-form-urlencoded;");
-            })
-            .catch(done).finally(done);
+        .then(function(response) {
+            that.server.requests[0].requestHeaders["Content-Type"].should.startWith("application/x-www-form-urlencoded;");
+        })
+        .catch(done).finally(done);
 
         this.server.respond();
     });
@@ -187,10 +187,10 @@ describe('#ajax', function() {
         this.server.respondWith('GET', '/users/john', [200, { 'Content-Type': 'application/json' }, '[]']);
 
         ajax.getJson('/users/john')
-            .then(function(response) {
-                that.server.requests[0].requestHeaders["Accept"].should.startWith("application/json");
-            })
-            .catch(done).finally(done);
+        .then(function(response) {
+            that.server.requests[0].requestHeaders["Accept"].should.startWith("application/json");
+        })
+        .catch(done).finally(done);
 
         this.server.respond();
     });
@@ -201,10 +201,10 @@ describe('#ajax', function() {
         this.server.respondWith('POST', '/users/john', [200, { 'Content-Type': 'application/json' }, '[]']);
 
         ajax.postJson('/users/john', {"name": "John Smith", "age": 21})
-            .then(function(response) {
-                that.server.requests[0].requestHeaders["Content-Type"].should.startWith("application/json");
-            })
-            .catch(done).finally(done);
+        .then(function(response) {
+            that.server.requests[0].requestHeaders["Content-Type"].should.startWith("application/json");
+        })
+        .catch(done).finally(done);
 
         this.server.respond();
     });
@@ -215,10 +215,10 @@ describe('#ajax', function() {
         this.server.respondWith('POST', '/users/john', [200, { 'Content-Type': 'application/json' }, '[]']);
 
         ajax.postJson('/users/john', {"name": "John Smith", "age": 21})
-            .then(function(response) {
-                that.server.requests[0].requestBody.should.equal('{"name":"John Smith","age":21}');
-            })
-            .catch(done).finally(done);
+        .then(function(response) {
+            that.server.requests[0].requestBody.should.equal('{"name":"John Smith","age":21}');
+        })
+        .catch(done).finally(done);
 
         this.server.respond();
     });
@@ -229,10 +229,10 @@ describe('#ajax', function() {
         this.server.respondWith('POST', '/users/john', [200, { 'Content-Type': 'application/json' }, '[]']);
 
         ajax.postJson('/users/john', '{"name": "John Smith", "age": 21}')
-            .then(function(response) {
-                that.server.requests[0].requestBody.should.equal('{"name": "John Smith", "age": 21}');
-            })
-            .catch(done).finally(done);
+        .then(function(response) {
+            that.server.requests[0].requestBody.should.equal('{"name": "John Smith", "age": 21}');
+        })
+        .catch(done).finally(done);
 
         this.server.respond();
     });
@@ -243,10 +243,10 @@ describe('#ajax', function() {
         this.server.respondWith('PATCH', '/users/john', [200, { 'Content-Type': 'application/json' }, '[]']);
 
         ajax.patchJson('/users/john', {"name": "John Smith", "age": 21})
-            .then(function(response) {
-                that.server.requests[0].requestHeaders["Content-Type"].should.startWith("application/json");
-            })
-            .catch(done).finally(done);
+        .then(function(response) {
+            that.server.requests[0].requestHeaders["Content-Type"].should.startWith("application/json");
+        })
+        .catch(done).finally(done);
 
         this.server.respond();
     });
@@ -257,10 +257,10 @@ describe('#ajax', function() {
         this.server.respondWith('PATCH', '/users/john', [200, { 'Content-Type': 'application/json' }, '[]']);
 
         ajax.patchJson('/users/john', {"name": "John Smith", "age": 21})
-            .then(function(response) {
-                that.server.requests[0].requestBody.should.equal('{"name":"John Smith","age":21}');
-            })
-            .catch(done).finally(done);
+        .then(function(response) {
+            that.server.requests[0].requestBody.should.equal('{"name":"John Smith","age":21}');
+        })
+        .catch(done).finally(done);
 
         this.server.respond();
     });
@@ -271,10 +271,10 @@ describe('#ajax', function() {
         this.server.respondWith('PATCH', '/users/john', [200, { 'Content-Type': 'application/json' }, '[]']);
 
         ajax.patchJson('/users/john', '{"name": "John Smith", "age": 21}')
-            .then(function(response) {
-                that.server.requests[0].requestBody.should.equal('{"name": "John Smith", "age": 21}');
-            })
-            .catch(done).finally(done);
+        .then(function(response) {
+            that.server.requests[0].requestBody.should.equal('{"name": "John Smith", "age": 21}');
+        })
+        .catch(done).finally(done);
 
         this.server.respond();
     });
@@ -285,10 +285,10 @@ describe('#ajax', function() {
         this.server.respondWith('PUT', '/users/john', [200, { 'Content-Type': 'application/json' }, '[]']);
 
         ajax.putJson('/users/john', {"name": "John Smith", "age": 21})
-            .then(function(response) {
-                that.server.requests[0].requestHeaders["Content-Type"].should.startWith("application/json");
-            })
-            .catch(done).finally(done);
+        .then(function(response) {
+            that.server.requests[0].requestHeaders["Content-Type"].should.startWith("application/json");
+        })
+        .catch(done).finally(done);
 
         this.server.respond();
     });
@@ -299,10 +299,10 @@ describe('#ajax', function() {
         this.server.respondWith('PUT', '/users/john', [200, { 'Content-Type': 'application/json' }, '[]']);
 
         ajax.putJson('/users/john', {"name": "John Smith", "age": 21})
-            .then(function(response) {
-                that.server.requests[0].requestBody.should.equal('{"name":"John Smith","age":21}');
-            })
-            .catch(done).finally(done);
+        .then(function(response) {
+            that.server.requests[0].requestBody.should.equal('{"name":"John Smith","age":21}');
+        })
+        .catch(done).finally(done);
 
         this.server.respond();
     });
@@ -313,10 +313,10 @@ describe('#ajax', function() {
         this.server.respondWith('PUT', '/users/john', [200, { 'Content-Type': 'application/json' }, '[]']);
 
         ajax.putJson('/users/john', '{"name": "John Smith", "age": 21}')
-            .then(function(response) {
-                that.server.requests[0].requestBody.should.equal('{"name": "John Smith", "age": 21}');
-            })
-            .catch(done).finally(done);
+        .then(function(response) {
+            that.server.requests[0].requestBody.should.equal('{"name": "John Smith", "age": 21}');
+        })
+        .catch(done).finally(done);
 
         this.server.respond();
     });
@@ -327,10 +327,10 @@ describe('#ajax', function() {
         this.server.respondWith('DELETE', '/users/john', [200, { 'Content-Type': 'application/json' }, '[]']);
 
         ajax.deleteJson('/users/john', {"name": "John Smith", "age": 21})
-            .then(function(response) {
-                that.server.requests[0].requestHeaders["Content-Type"].should.startWith("application/json");
-            })
-            .catch(done).finally(done);
+        .then(function(response) {
+            that.server.requests[0].requestHeaders["Content-Type"].should.startWith("application/json");
+        })
+        .catch(done).finally(done);
 
         this.server.respond();
     });
@@ -341,10 +341,10 @@ describe('#ajax', function() {
         this.server.respondWith('DELETE', '/users/john', [200, { 'Content-Type': 'application/json' }, '[]']);
 
         ajax.deleteJson('/users/john', {"name": "John Smith", "age": 21})
-            .then(function(response) {
-                that.server.requests[0].requestBody.should.equal('{"name":"John Smith","age":21}');
-            })
-            .catch(done).finally(done);
+        .then(function(response) {
+            that.server.requests[0].requestBody.should.equal('{"name":"John Smith","age":21}');
+        })
+        .catch(done).finally(done);
 
         this.server.respond();
     });
@@ -355,10 +355,10 @@ describe('#ajax', function() {
         this.server.respondWith('DELETE', '/users/john', [200, { 'Content-Type': 'application/json' }, '[]']);
 
         ajax.deleteJson('/users/john', '{"name": "John Smith", "age": 21}')
-            .then(function(response) {
-                that.server.requests[0].requestBody.should.equal('{"name": "John Smith", "age": 21}');
-            })
-            .catch(done).finally(done);
+        .then(function(response) {
+            that.server.requests[0].requestBody.should.equal('{"name": "John Smith", "age": 21}');
+        })
+        .catch(done).finally(done);
 
         this.server.respond();
     });
@@ -369,15 +369,15 @@ describe('#ajax', function() {
         this.server.respondWith('GET', '/', [200, { 'Content-Type': 'application/json' }, '[]']);
 
         ajax.get('/')
-            .then(function(response) {
-                response.status.should.equal(that.server.requests[0].status);
-                response.status.should.equal(200);
-                response.statusText.should.equal(that.server.requests[0].statusText);
-                response.statusText.should.equal('OK');
-                response.responseText.should.equal(that.server.requests[0].responseText);
-                response.responseText.should.equal('[]');
-            })
-            .catch(done).finally(done);
+        .then(function(response) {
+            response.status.should.equal(that.server.requests[0].status);
+            response.status.should.equal(200);
+            response.statusText.should.equal(that.server.requests[0].statusText);
+            response.statusText.should.equal('OK');
+            response.responseText.should.equal(that.server.requests[0].responseText);
+            response.responseText.should.equal('[]');
+        })
+        .catch(done).finally(done);
 
         this.server.respond();
     });
@@ -386,10 +386,10 @@ describe('#ajax', function() {
         this.server.respondWith('GET', '/', [200, { 'Content-Type': 'application/json' }, '{"name": "Nick"}']);
 
         ajax.get('/')
-            .then(function(response) {
-                response.json.should.eql({"name": "Nick"});
-            })
-            .catch(done).finally(done);
+        .then(function(response) {
+            response.json.should.eql({"name": "Nick"});
+        })
+        .catch(done).finally(done);
 
         this.server.respond();
     });
@@ -398,10 +398,10 @@ describe('#ajax', function() {
         this.server.respondWith('GET', '/', [200, { 'Content-Type': 'text/plain' }, '{"name": "Nick"}']);
 
         ajax.get('/')
-            .then(function(response) {
-                should.equal(response.json, undefined);
-            })
-            .catch(done).finally(done);
+        .then(function(response) {
+            should.equal(response.json, undefined);
+        })
+        .catch(done).finally(done);
 
         this.server.respond();
     });
@@ -410,10 +410,10 @@ describe('#ajax', function() {
         this.server.respondWith('DELETE', '/', [200, {}, '']);
 
         ajax.delete('/')
-            .then(function(response) {
-                should.equal(response.json, undefined);
-            })
-            .catch(done).finally(done);
+        .then(function(response) {
+            should.equal(response.json, undefined);
+        })
+        .catch(done).finally(done);
 
         this.server.respond();
     });
@@ -422,11 +422,11 @@ describe('#ajax', function() {
         this.server.respondWith('GET', '/', [200, { 'Content-Type': 'application/json', 'Location': '/someuri' }, '[]']);
 
         ajax.get('/')
-            .then(function(response) {
-                response.headers['Content-Type'].should.equal('application/json');
-                response.headers['Location'].should.equal('/someuri');
-            })
-            .catch(done).finally(done);
+        .then(function(response) {
+            response.headers['Content-Type'].should.equal('application/json');
+            response.headers['Location'].should.equal('/someuri');
+        })
+        .catch(done).finally(done);
 
         this.server.respond();
     });
@@ -435,10 +435,10 @@ describe('#ajax', function() {
         this.server.respondWith('GET', '/', [200, null, '[]']);
 
         ajax.get('/')
-            .then(function(response) {
-                Object.keys(response.headers).length.should.equal(0);
-            })
-            .catch(done).finally(done);
+        .then(function(response) {
+            Object.keys(response.headers).length.should.equal(0);
+        })
+        .catch(done).finally(done);
 
         this.server.respond();
     });
@@ -447,10 +447,10 @@ describe('#ajax', function() {
         this.server.respondWith('GET', '/', [200, {'Header': 'um: um'}, '[]']);
 
         ajax.get('/')
-            .then(function(response) {
-                response.headers.Header.should.equal('um: um');
-            })
-            .catch(done).finally(done);
+        .then(function(response) {
+            response.headers.Header.should.equal('um: um');
+        })
+        .catch(done).finally(done);
 
         this.server.respond();
     });
@@ -464,10 +464,10 @@ describe('#ajax', function() {
         });
 
         ajax.get('/')
-            .then(function(response) {
-                response.status.should.equal(200);
-            })
-            .catch(done).finally(done);
+        .then(function(response) {
+            response.status.should.equal(200);
+        })
+        .catch(done).finally(done);
 
         this.server.respond();
     });
@@ -481,10 +481,10 @@ describe('#ajax', function() {
         });
 
         ajax.post('/', [], null)
-            .then(function(response) {
-                response.status.should.equal(200);
-            })
-            .catch(done).finally(done);
+        .then(function(response) {
+            response.status.should.equal(200);
+        })
+        .catch(done).finally(done);
 
         this.server.respond();
     });
@@ -498,10 +498,10 @@ describe('#ajax', function() {
         });
 
         ajax.post('/', [], undefined)
-            .then(function(response) {
-                response.status.should.equal(200);
-            })
-            .catch(done).finally(done);
+        .then(function(response) {
+            response.status.should.equal(200);
+        })
+        .catch(done).finally(done);
 
         this.server.respond();
     });
@@ -515,10 +515,10 @@ describe('#ajax', function() {
         });
 
         ajax.post('/', undefined, 'a body')
-            .then(function(response) {
-                response.status.should.equal(200);
-            })
-            .catch(done).finally(done);
+        .then(function(response) {
+            response.status.should.equal(200);
+        })
+        .catch(done).finally(done);
 
         this.server.respond();
     });
@@ -559,7 +559,7 @@ describe('#ajax', function() {
         });
 
         ajax.get('/', {'Cache-Control': 'nick', 'Pragma': 'nick2', 'If-Modified-Since': 'nick3'})
-            .catch(done).finally(done);
+        .catch(done).finally(done);
 
         this.server.respond();
     });
@@ -592,10 +592,10 @@ describe('#ajax', function() {
         ajax.setHooks([hook]);
 
         ajax.get('/').then(function () {
-                should.equal(preCalled, true);
-                should.equal(postCalled, true);
-            })
-            .catch(done).finally(done);
+            should.equal(preCalled, true);
+            should.equal(postCalled, true);
+        })
+        .catch(done).finally(done);
 
         this.server.respond();
     });
@@ -652,11 +652,11 @@ describe('#ajax', function() {
         ajax.addHooks([hook2]);
 
         ajax.get('/')
-            .then(function (ro) {
-                should.equal(firstHookRan, true);
-                should.equal(secondHookRan, true);
-            })
-            .catch(done).finally(done);
+        .then(function (ro) {
+            should.equal(firstHookRan, true);
+            should.equal(secondHookRan, true);
+        })
+        .catch(done).finally(done);
 
         this.server.respond();
     });
@@ -674,11 +674,11 @@ describe('#ajax', function() {
         ajax.setHooks([hook2]);
 
         ajax.get('/')
-            .then(function (ro) {
-                should.equal(firstHookRan, false);
-                should.equal(secondHookRan, true);
-            })
-            .catch(done).finally(done);
+        .then(function (ro) {
+            should.equal(firstHookRan, false);
+            should.equal(secondHookRan, true);
+        })
+        .catch(done).finally(done);
 
         this.server.respond();
     });
@@ -697,8 +697,8 @@ describe('#ajax', function() {
         ajax.addHooks([hook3, hook4]);
 
         ajax.get('/')
-            .then(function (ro) { runOrder.should.eql([1,2,3,4]); })
-            .catch(done).finally(done);
+        .then(function (ro) { runOrder.should.eql([1,2,3,4]); })
+        .catch(done).finally(done);
 
         this.server.respond();
     });
@@ -729,10 +729,10 @@ describe('#ajax', function() {
         ajax.setHooks([hook1, hook2]);
 
         ajax.get('/')
-            .then(function () {
-                calls.should.eql([1,2,3,4]);
-            })
-            .catch(done).finally(done);
+        .then(function () {
+            calls.should.eql([1,2,3,4]);
+        })
+        .catch(done).finally(done);
 
         this.server.respond();
     });
@@ -752,7 +752,7 @@ describe('#ajax', function() {
         ajax.setHooks([hook]);
 
         ajax.get('/')
-            .catch(done).finally(done);
+        .catch(done).finally(done);
 
         this.server.respond();
     });
@@ -777,15 +777,15 @@ describe('#ajax', function() {
         var that = this;
         testString = '/first';
         ajax.get('/first')
-            .then(function () {
-                that.server.respondWith('GET', '/second', [200, {}, '']);
+        .then(function () {
+            that.server.respondWith('GET', '/second', [200, {}, '']);
 
-                testString = '/second';
-                ajax.get('/second').catch(done).finally(done);
+            testString = '/second';
+            ajax.get('/second').catch(done).finally(done);
 
-                that.server.respond();
-            })
-            .catch(done).finally(done);
+            that.server.respond();
+        })
+        .catch(done).finally(done);
 
         this.server.respond();
     });
@@ -815,7 +815,7 @@ describe('#ajax', function() {
         ajax.setHooks([hook1, hook2]);
 
         ajax.get('/')
-            .catch(done).finally(done);
+        .catch(done).finally(done);
 
         this.server.respond();
     });
@@ -830,7 +830,7 @@ describe('#ajax', function() {
         ajax.setHooks([hook]);
 
         ajax.get('/')
-            .catch(done).finally(done);
+        .catch(done).finally(done);
 
         this.server.respond();
     });
@@ -845,7 +845,7 @@ describe('#ajax', function() {
         ajax.setHooks([hook]);
 
         ajax.get('/')
-            .catch(done).finally(done);
+        .catch(done).finally(done);
 
         this.server.respond();
     });
@@ -862,11 +862,11 @@ describe('#ajax', function() {
         ajax.setHooks([hook]);
 
         ajax.get('/')
-            .then(function (obj) {
-                if (!obj.cancelled)
-                    assert.fail('not cancelled', 'cancelled', 'then not passed the cancelled object');
-            })
-            .catch(done).finally(done);
+        .then(function (obj) {
+            if (!obj.cancelled)
+                assert.fail('not cancelled', 'cancelled', 'then not passed the cancelled object');
+        })
+        .catch(done).finally(done);
 
         this.server.respond();
     });
@@ -903,13 +903,13 @@ describe('#ajax', function() {
         ajax.setHooks([hook]);
 
         ajax.get('/')
-            .then(function (obj) {
-                if (!obj.cancelled)
-                    assert.fail('not cancelled', 'cancelled', 'then not passed the cancelled object');
-                obj.reason.should.equal('just because');
-                obj.xhr.url.should.equal('/');
-            })
-           .catch(done).finally(done);
+        .then(function (obj) {
+            if (!obj.cancelled)
+                assert.fail('not cancelled', 'cancelled', 'then not passed the cancelled object');
+            obj.reason.should.equal('just because');
+            obj.xhr.url.should.equal('/');
+        })
+        .catch(done).finally(done);
 
         this.server.respond();
     });
@@ -941,6 +941,16 @@ describe('#ajax', function() {
         ajax.setHooks([hook]);
 
         ajax.get('/').then(function() { assert.fail(); }).finally(done);
+
+        this.server.respond();
+    });
+
+    it('when response says it is json but response body is blank, the formatter still works', function(done) {
+        this.server.respondWith('GET', '/', [200, { 'Content-Type': 'application/json' }, '']);
+
+        ajax.get('/').then(function(obj) {
+            window.console.log('info', obj); //jshint ignore:line
+        }).finally(done);
 
         this.server.respond();
     });
